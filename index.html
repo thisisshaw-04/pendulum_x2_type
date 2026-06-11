@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neobrut">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PENDULUM_X2_TYPE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@500;600;700&family=Outfit:wght@400;500;600;700&family=Patrick+Hand&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-head">
+      <div class="app-head-title">
+        <h1 class="panel-title">PENDULUM_X2_TYPE</h1>
+      </div>
+      <div class="topbar">
+        <div class="topbar-main">
+          <p
+            class="topbar-about"
+            data-full-text="The pendulum_x2_type generator draws letters using the mathematical behaviour of a double pendulum with the main pivot tracing along the outlines of the typeface selected. Hope this little activity instills a bit of admiration for the art of science in you &lt;3"
+          >
+            The pendulum_x2_type generator draws letters using the mathematical behaviour of a double pendulum with the main pivot tracing along the outlines of the typeface selected. Hope this little activity instills a bit of admiration for the art of science in you &lt;3
+          </p>
+
+          <div class="topbar-actions">
+            <button id="btn-start" class="btn-topbar btn-write" type="button">Write</button>
+            <button id="btn-pause" class="btn-topbar" type="button" disabled>Pause</button>
+            <button id="btn-save" class="btn-topbar btn-save" type="button">Save</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+      <div class="panel-column">
+        <aside class="panel" id="panel">
+          <button type="button" id="panel-settings-backdrop" class="panel-settings-backdrop" aria-label="Close settings" tabindex="-1"></button>
+          <div class="panel-sheet">
+            <div class="panel-inner">
+              <div class="panel-settings-head">
+                <p class="section-label">Settings</p>
+                <button type="button" id="btn-settings-close" class="btn-settings-close" aria-label="Close settings">×</button>
+              </div>
+
+              <section class="section section-text">
+                <p class="section-label">Text</p>
+                <div id="compose-slot-panel" class="compose-slot-panel">
+                  <input id="text-input" class="text-in" type="text" placeholder="write a letter, word or sentence" />
+                </div>
+                <div class="card">
+                  <div id="letter-grid" class="letter-grid"></div>
+                </div>
+              </section>
+
+              <div class="panel-settings-body">
+          <section class="section">
+            <p class="section-label">Layout</p>
+            <div class="card card-stack">
+              <div class="field field-font">
+                <div class="field-top"><span>Font</span></div>
+                <div class="font-picker" id="font-picker">
+                  <select id="font-select" class="font-picker-native" title="Google Fonts" tabindex="-1" aria-hidden="true">
+                    <option value="open-sans">Open Sans</option>
+                  </select>
+                  <button
+                    type="button"
+                    id="font-select-trigger"
+                    class="font-picker-trigger select-in"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="font-select-list"
+                  >
+                    <span id="font-select-label">Open Sans</span>
+                  </button>
+                  <div id="font-select-list" class="font-picker-list" role="listbox" hidden></div>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <div class="field-top"><span>Size</span><span id="letter-size-val" class="val">88</span></div>
+                  <input id="letter-size" type="range" min="40" max="100" value="88" />
+                </div>
+                <div class="field">
+                  <div class="field-top"><span>Spacing</span><span id="letter-spacing-val" class="val">0</span></div>
+                  <input id="letter-spacing" type="range" min="-20" max="40" value="0" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <p class="section-label">Appearance</p>
+            <div class="card card-stack">
+              <div class="color-row">
+                <label class="swatch">
+                  <span class="swatch-label">Background</span>
+                  <input id="bg-color" type="color" value="#ffffff" />
+                </label>
+                <label class="swatch">
+                  <span class="swatch-label">Trace</span>
+                  <input id="tracer-color" type="color" value="#000000" />
+                </label>
+              </div>
+              <div class="grid-2 pen-pendulum-row">
+                <div class="field">
+                  <div class="field-top"><span>Pen</span><span id="pen-weight-val" class="val">1.5</span></div>
+                  <input id="pen-weight" type="range" min="0.5" max="10" value="1.5" step="0.5" />
+                </div>
+                <div class="field field-pendulum-toggle">
+                  <div class="field-top"><span>Pendulum</span></div>
+                  <div class="pendulum-switch-wrap">
+                    <label class="switch switch-wide" title="Show pendulum rods">
+                      <input id="show-rods" type="checkbox" checked />
+                      <span class="switch-track">
+                        <span class="switch-thumb">
+                          <span class="switch-thumb-text switch-thumb-text-on">Show</span>
+                          <span class="switch-thumb-text switch-thumb-text-off">Don't Show</span>
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section section-physics">
+            <p class="section-label">Physics</p>
+            <div class="card grid-2">
+              <div class="field">
+                <div class="field-top"><span>Rod 1</span><span id="rod1-val" class="val">6</span></div>
+                <input id="rod1" type="range" min="3" max="40" value="6" />
+              </div>
+              <div class="field">
+                <div class="field-top"><span>Rod 2</span><span id="rod2-val" class="val">9</span></div>
+                <input id="rod2" type="range" min="3" max="50" value="9" />
+              </div>
+              <div class="field">
+                <div class="field-top"><span>Gravity</span><span id="gravity-val" class="val">18</span></div>
+                <input id="gravity" type="range" min="4" max="30" value="18" step="0.5" />
+              </div>
+              <div class="field">
+                <div class="field-top"><span>Damping</span><span id="damping-val" class="val">0.012</span></div>
+                <input id="damping" type="range" min="0" max="0.05" value="0.012" step="0.001" />
+              </div>
+              <div class="field">
+                <div class="field-top"><span>Seed</span><span id="chaos-seed-val" class="val">42</span></div>
+                <input id="chaos-seed" type="range" min="0" max="999" value="42" />
+              </div>
+              <div class="field">
+                <div class="field-top"><span>Speed</span><span id="trace-speed-val" class="val">6</span></div>
+                <input id="trace-speed" type="range" min="1" max="30" value="6" />
+              </div>
+            </div>
+          </section>
+              </div>
+
+              <p class="panel-settings-about">
+                The pendulum_x2_type generator draws letters using the mathematical behaviour of a double pendulum with the main pivot tracing along the outlines of the typeface selected. Hope this little activity instills a bit of admiration for the art of science in you &lt;3
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <footer class="compose-bar">
+          <div class="compose-row" id="compose-row-mobile">
+            <button
+              type="button"
+              id="btn-settings"
+              class="btn-menu"
+              aria-label="Open settings"
+              aria-expanded="false"
+              aria-controls="panel"
+            >
+              <span class="btn-menu-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </footer>
+      </div>
+
+      <main class="canvas-wrap" id="canvas-wrap">
+        <div id="p5-container"></div>
+        <div class="view-zoom" aria-label="Zoom">
+          <button id="zoom-out" class="view-zoom-btn" type="button" title="Zoom out">−</button>
+          <span id="zoom-val" class="view-zoom-val">100%</span>
+          <button id="zoom-in" class="view-zoom-btn" type="button" title="Zoom in">+</button>
+          <button id="zoom-reset" class="view-zoom-btn view-zoom-reset" type="button" title="Reset view">↻</button>
+        </div>
+        <div class="canvas-corner">
+          <div class="pendulum-preview" id="pendulum-preview" hidden>
+            <canvas id="pendulum-preview-canvas" width="168" height="126" aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <footer class="canvas-foot">
+          <div id="theme-picker" class="theme-picker canvas-theme-picker" role="group" aria-label="Theme"></div>
+          <div id="status" class="status">Loading font…</div>
+          <p class="canvas-credit">designed by tanisha shaw</p>
+        </footer>
+      </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.0/lib/p5.min.js"></script>
+  <script src="js/google-fonts.js"></script>
+  <script src="js/themes.js"></script>
+  <script src="js/sketch.js"></script>
+</body>
+</html>
