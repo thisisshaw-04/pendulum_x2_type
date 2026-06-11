@@ -445,6 +445,19 @@ html[data-theme="retro"] .pendulum-preview::after {
   --orange: #000080;
 }
 
+html[data-theme="retro"] .section-physics > .card.grid-2 {
+  gap: 5px 10px;
+  padding: 7px 8px;
+}
+
+html[data-theme="retro"] .section-physics > .card.grid-2 .field {
+  gap: 2px;
+}
+
+html[data-theme="retro"] .section-physics > .card.grid-2 .field-top {
+  min-height: 14px;
+}
+
 /* ─── Y2K (glossy Frutiger Aero / Carrd profile) ────────────────────────── */
 
 html[data-theme="y2k"] {
@@ -1801,6 +1814,15 @@ html[data-theme="matrix"] .pendulum-preview::after {
   html[data-theme="retro"] .app-head-title .panel-title {
     font-size: clamp(13px, 8.8cqi, 25px);
     letter-spacing: -0.04em;
+  }
+
+  html[data-theme="retro"] .section-physics > .card.grid-2 {
+    height: auto;
+    margin-top: auto;
+    align-content: start;
+    row-gap: 3px;
+    column-gap: 5px;
+    padding: 5px 7px;
   }
 
   html[data-theme="y2k"] .app-head-title .panel-title {
