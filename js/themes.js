@@ -61,12 +61,22 @@ function applyThemeColors(theme) {
 }
 
 function applyTheme(themeId, { persist = true, updateColors = true } = {}) {
+  const previousTheme = document.documentElement.dataset.theme || "neobrut";
   const id = THEMES[themeId] ? themeId : "neobrut";
   const theme = THEMES[id];
   document.documentElement.dataset.theme = id;
   if (persist) localStorage.setItem(THEME_STORAGE_KEY, id);
   setThemeOptionState(id);
   if (updateColors) applyThemeColors(theme);
+  if (persist && typeof pendo !== "undefined") {
+    pendo.track("theme_applied", {
+      themeId: id,
+      themeLabel: theme.label,
+      previousTheme: previousTheme,
+      bgColor: theme.bg,
+      traceColor: theme.trace,
+    });
+  }
   return id;
 }
 
