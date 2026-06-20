@@ -11,6 +11,7 @@ let ready = false;
 
 const fontCache = {};
 let fontLoading = false;
+let lastSelectedFontId = DEFAULT_FONT_ID;
 
 let fontSize = 400;
 let pathMaxGap = 20;
@@ -1369,6 +1370,29 @@ function startJob(sk) {
   setStatus(`Tracing "${text}" — ${jobGlyphsToDraw.length} unique glyph(s)`);
   beginLetter(sk, jobGlyphsToDraw[0]);
   updateTransportUI();
+
+  if (typeof pendo !== "undefined") {
+    pendo.track("generation_started", {
+      text: text.slice(0, 50),
+      charCount: text.length,
+      uniqueGlyphCount: jobGlyphsToDraw.length,
+      fontId: id,
+      fontFamily: getFontLabel(id),
+      fontSize: fontSize,
+      letterSpacing: Number($("letter-spacing").value),
+      rod1Length: Number($("rod1").value),
+      rod2Length: Number($("rod2").value),
+      gravity: Number($("gravity").value),
+      damping: Number($("damping").value),
+      chaosSeed: Number($("chaos-seed").value),
+      traceSpeed: Number($("trace-speed").value),
+      penWeight: Number($("pen-weight").value),
+      showRods: $("show-rods").checked,
+      bgColor: $("bg-color").value,
+      tracerColor: $("tracer-color").value,
+      activeTheme: document.documentElement.dataset.theme || "neobrut",
+    });
+  }
 }
 
 function pauseJob(sk) {
@@ -1392,6 +1416,17 @@ function pauseJob(sk) {
     setStatus("Paused");
   }
   updateTransportUI();
+
+  if (typeof pendo !== "undefined") {
+    pendo.track("generation_paused", {
+      text: getText().slice(0, 50),
+      currentChar: tracingChar,
+      glyphIndex: jobGlyphIndex,
+      totalGlyphs: jobGlyphsToDraw.length,
+      fontId: getSelectedFontId(),
+      fontFamily: getFontLabel(getSelectedFontId()),
+    });
+  }
 }
 
 function resumeJob(sk) {
@@ -1414,6 +1449,18 @@ function resumeJob(sk) {
   setProgress(`Resuming "${tracingChar}" — glyph ${cp.jobGlyphIndex + 1} / ${cp.jobGlyphsToDraw.length}`);
   setStatus(`Tracing "${tracingChar}"…`);
   updateTransportUI();
+
+  if (typeof pendo !== "undefined") {
+    pendo.track("generation_resumed", {
+      text: getText().slice(0, 50),
+      currentChar: tracingChar,
+      glyphIndex: jobGlyphIndex,
+      totalGlyphs: jobGlyphsToDraw.length,
+      fontId: getSelectedFontId(),
+      fontFamily: getFontLabel(getSelectedFontId()),
+    });
+  }
+
   return true;
 }
 
@@ -1515,6 +1562,26 @@ function finishJob(sk) {
   setProgress(`"${text}" — ${unique} unique, ${jobChars.length} chars`);
   setStatus("Complete — save PNG or start again");
   updateTransportUI();
+
+  if (typeof pendo !== "undefined") {
+    var finishFontId = getSelectedFontId();
+    pendo.track("generation_completed", {
+      text: text.slice(0, 50),
+      charCount: text.length,
+      uniqueGlyphCount: unique,
+      fontId: finishFontId,
+      fontFamily: getFontLabel(finishFontId),
+      fontSize: fontSize,
+      rod1Length: Number($("rod1").value),
+      rod2Length: Number($("rod2").value),
+      gravity: Number($("gravity").value),
+      damping: Number($("damping").value),
+      chaosSeed: Number($("chaos-seed").value),
+      traceSpeed: Number($("trace-speed").value),
+      penWeight: Number($("pen-weight").value),
+      activeTheme: document.documentElement.dataset.theme || "neobrut",
+    });
+  }
 }
 
 function buildComposite(sk) {
@@ -1759,6 +1826,13 @@ function loadSelectedFont(sk, onReady) {
           setFontControlsEnabled(true);
           updateTransportUI();
           setStatus(`Failed to load ${label}`);
+          if (typeof pendo !== "undefined") {
+            pendo.track("font_load_failed", {
+              fontId: id,
+              fontFamily: label,
+              errorSource: "font_file",
+            });
+          }
         }
       );
     })
@@ -1767,10 +1841,29 @@ function loadSelectedFont(sk, onReady) {
       setFontControlsEnabled(true);
       updateTransportUI();
       setStatus(`Failed to load ${label}`);
+      if (typeof pendo !== "undefined") {
+        pendo.track("font_load_failed", {
+          fontId: id,
+          fontFamily: label,
+          errorSource: "url_resolution",
+        });
+      }
     });
 }
 
 function onFontSelectionChanged() {
+  var newFontId = getSelectedFontId();
+  if (typeof pendo !== "undefined") {
+    pendo.track("font_selected", {
+      fontId: newFontId,
+      fontFamily: getFontLabel(newFontId),
+      previousFontId: lastSelectedFontId,
+      previousFontFamily: getFontLabel(lastSelectedFontId),
+      wasFromCache: !!fontCache[newFontId],
+    });
+  }
+  lastSelectedFontId = newFontId;
+
   if (jobCheckpoint && getSelectedFontId() !== jobCheckpoint.fontId) clearCheckpoint();
   glyphCache.clear();
   compositeLayer = null;
@@ -2122,6 +2215,20 @@ $("btn-save").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   document.body.appendChild(link);
   link.click();
+
+  if (typeof pendo !== "undefined") {
+    pendo.track("png_exported", {
+      filename: link.download,
+      text: getText().slice(0, 50),
+      fontId: getSelectedFontId(),
+      fontFamily: getFontLabel(getSelectedFontId()),
+      bgColor: $("bg-color").value,
+      tracerColor: $("tracer-color").value,
+      activeTheme: document.documentElement.dataset.theme || "neobrut",
+      exportPixelScale: EXPORT_PIXEL_SCALE,
+    });
+  }
+
   link.remove();
 });
 
